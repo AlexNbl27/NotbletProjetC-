@@ -9,5 +9,5 @@ services:
     build:
       context: .
       dockerfile: ApiNotblet/Dockerfile
-
-
+    volumes:
+      - ./ApiNotblet/database.db:/app/database.db
