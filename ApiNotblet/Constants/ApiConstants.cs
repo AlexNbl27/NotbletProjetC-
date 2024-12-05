@@ -8,7 +8,7 @@ namespace Notblet.Constants
 {
     public class ApiConstants
     {
-        public static string BaseApiUrl = "http://localhost:6262/api/";
+        public static string BaseApiUrl = "http://localhost:9090/api/";
         public static string Users = "users";
         public static string Clients = "clients";
         public static string Categories = "categories";

@@ -4,8 +4,8 @@ services:
   apinotblet:
     image: ${DOCKER_REGISTRY-}apinotblet
     ports:
-      - "6262:8080"
-      - "6263:8081"
+      - "9090:8080"
+      - "9091:8081"
     build:
       context: .
       dockerfile: ApiNotblet/Dockerfile
