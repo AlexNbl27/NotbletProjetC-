@@ -1,0 +1,24 @@
+﻿<Page x:Class="Notblet.Views.MainApp"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Notblet.Views"
+        mc:Ignorable="d"
+        Title="MainApp">
+    <Grid>
+        <!-- Sidebar Navigation -->
+        <StackPanel Background="#333" Width="200" HorizontalAlignment="Left">
+            <!-- Button Style -->
+            <Button Content="Dashboard" HorizontalAlignment="Stretch" Margin="0,20,0,20" Height="40" Click="NavigateButton_Click" Tag="Home" Background="#4A90E2" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
+            <Button Content="Produits" HorizontalAlignment="Stretch" Margin="0,0,0,10" Height="40" Click="NavigateButton_Click" Tag="Products" Background="#3f51b5" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
+            <Button Content="Catégories" HorizontalAlignment="Stretch" Margin="0,0,0,10" Height="40" Click="NavigateButton_Click" Tag="Categories" Background="#4A90E2" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
+            <Button Content="Clients" HorizontalAlignment="Stretch" Margin="0,0,0,10" Height="40" Click="NavigateButton_Click" Tag="Clients" Background="#388e3c" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
+            <Button Content="Commandes" HorizontalAlignment="Stretch" Margin="0,0,0,10" Height="40" Click="NavigateButton_Click" Tag="Orders" Background="#CC6CE7" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
+            <Button Content="Déconnexion" HorizontalAlignment="Stretch" Margin="0,10,0,10" Height="40" Click="NavigateButton_Click" Tag="Logout" Background="#E74C3C" Foreground="White" BorderBrush="Transparent" FontWeight="Bold"/>
+        </StackPanel>
+
+        <!-- Content Frame to display pages -->
+        <Frame Name="ContentFrame" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="200,0,0,0" Foreground="#f0f4f8"/>
+    </Grid>
+</Page>

@@ -1,0 +1,4 @@
+@NotbletApi_HostAddress = http://localhost:5207
+
+GET {{NotbletApi_HostAddress}}//weatherforecast/
+Accept: application/json
