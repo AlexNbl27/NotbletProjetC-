@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Notblet.Constants;
 using Notblet.Models;
+using NLog; 
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,6 +13,8 @@ namespace Notblet.Views
     /// </summary>
     public partial class Orders : Page
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); // Initialize NLog logger
+
         List<ClientModel> Clients;
         List<ProductModel> Products;
 
@@ -29,10 +32,12 @@ namespace Notblet.Views
             {
                 string token = SecureTokenStorage.Instance.token;
                 string response = await ApiService.Instance.GetDataAsync(ApiConstants.Clients, token: token);
-                Clients = JsonConvert.DeserializeObject<List<ClientModel>>(response) ?? [];
+                Clients = JsonConvert.DeserializeObject<List<ClientModel>>(response) ?? new List<ClientModel>();
+                logger.Info("Clients loaded successfully.");
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "Error while loading clients");
                 MessageBox.Show($"Erreur lors du chargement des catégories : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -43,10 +48,12 @@ namespace Notblet.Views
             {
                 string token = SecureTokenStorage.Instance.token;
                 string response = await ApiService.Instance.GetDataAsync(ApiConstants.Products, token: token);
-                Products = JsonConvert.DeserializeObject<List<ProductModel>>(response) ?? [];
+                Products = JsonConvert.DeserializeObject<List<ProductModel>>(response) ?? new List<ProductModel>();
+                logger.Info("Products loaded successfully.");
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "Error while loading products");
                 MessageBox.Show($"Erreur lors du chargement des produits : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -57,14 +64,16 @@ namespace Notblet.Views
             {
                 string token = SecureTokenStorage.Instance.token;
                 string response = await ApiService.Instance.GetDataAsync(ApiConstants.Orders, token: token);
-                List<OrderModel> orders = JsonConvert.DeserializeObject<List<OrderModel>>(response) ?? [];
+                List<OrderModel> orders = JsonConvert.DeserializeObject<List<OrderModel>>(response) ?? new List<OrderModel>();
                 if (orders.Count > 0)
                 {
                     OrdersDataGrid.ItemsSource = orders;
+                    logger.Info("Orders loaded successfully.");
                 }
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "Error while loading orders");
                 MessageBox.Show($"Erreur lors du chargement des produits : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -73,11 +82,13 @@ namespace Notblet.Views
         {
             if (Clients == null || Clients.Count == 0)
             {
+                logger.Warn("No clients found when trying to add an order.");
                 MessageBox.Show("Veuillez ajouter des clients avant de passer une commande.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if(Products == null || Products.Count == 0)
+            if (Products == null || Products.Count == 0)
             {
+                logger.Warn("No products found when trying to add an order.");
                 MessageBox.Show("Veuillez ajouter des produits avant de passer une commande.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
@@ -89,40 +100,38 @@ namespace Notblet.Views
             if (addOrderDialog.ShowDialog() == true)
             {
                 AddOrderToDB(addOrderDialog.Order);
+                logger.Info("Order added.");
             }
         }
 
         private void OrdersDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // Vérifier si un élément est sélectionné
             if (OrdersDataGrid.SelectedItem is OrderModel selectedOrder)
             {
-                // Ouvrir la boîte de dialogue pour modifier la commande
                 var editOrderDialog = new OrderDialog(order: selectedOrder, clients: Clients, products: Products)
                 {
-                    Owner = Window.GetWindow(this) // Définit le propriétaire de la fenêtre
+                    Owner = Window.GetWindow(this)
                 };
 
                 if (editOrderDialog.ShowDialog() == true)
                 {
-                    // Mettre à jour la commande dans la base de données après modification
                     UpdateOrderInDB(editOrderDialog.Order);
+                    logger.Info($"Order {selectedOrder.id} updated.");
                 }
             }
         }
 
         private async void DeleteSelectedOrdersButton_Click(object sender, RoutedEventArgs e)
         {
-            // Vérifier si des commandes sont sélectionnées dans le DataGrid
             var selectedOrders = OrdersDataGrid.SelectedItems.Cast<OrderModel>().ToList();
 
             if (selectedOrders.Count == 0)
             {
+                logger.Warn("No orders selected for deletion.");
                 MessageBox.Show("Aucune commande sélectionnée pour suppression.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // Confirmer la suppression
             var result = MessageBox.Show($"Êtes-vous sûr de vouloir supprimer {selectedOrders.Count} commandes ?",
                                          "Confirmer la suppression",
                                          MessageBoxButton.YesNo,
@@ -135,14 +144,15 @@ namespace Notblet.Views
                     foreach (var order in selectedOrders)
                     {
                         await DeleteOrderFromDB(order);
+                        logger.Info($"Order {order.id} deleted.");
                     }
 
-                    // Actualiser la liste des commandes après suppression
                     await LoadOrdersAsync();
                     MessageBox.Show("Commandes supprimées avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
+                    logger.Error(ex, "Error while deleting orders.");
                     MessageBox.Show($"Erreur lors de la suppression des commandes : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -156,23 +166,24 @@ namespace Notblet.Views
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "Error while deleting order from DB.");
                 MessageBox.Show($"Erreur lors de la suppression de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-
         private async void AddOrderToDB(OrderModel order)
         {
-            try 
-            { 
+            try
+            {
                 await ApiService.Instance.PostDataAsync(endpoint: ApiConstants.Orders, token: SecureTokenStorage.Instance.token, jsonData: JsonConvert.SerializeObject(order));
 
-                // Actualiser la liste des produits après l'ajout
                 await LoadOrdersAsync();
-                MessageBox.Show("Commande ajouté avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                logger.Info("New order added to DB.");
+                MessageBox.Show("Commande ajoutée avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "Error while adding order to DB.");
                 MessageBox.Show($"Erreur lors de l'ajout de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -182,9 +193,11 @@ namespace Notblet.Views
             try
             {
                 await ApiService.Instance.PutDataAsync(endpoint: ApiConstants.Orders, token: SecureTokenStorage.Instance.token, jsonData: JsonConvert.SerializeObject(order));
+                logger.Info($"Order {order.id} updated in DB.");
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "Error while updating order in DB.");
                 MessageBox.Show($"Erreur lors de la modification de la commande : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

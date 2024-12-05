@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  apinotblet:
+    image: ${DOCKER_REGISTRY-}apinotblet
+    ports:
+      - "6262:8080"
+      - "6263:8081"
+    build:
+      context: .
+      dockerfile: ApiNotblet/Dockerfile
+
+

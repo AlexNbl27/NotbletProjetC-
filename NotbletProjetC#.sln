@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotbletApi", "NotbletApi\NotbletApi.csproj", "{A55CF95E-9EEB-478B-A4D1-7874B5BC6E84}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notblet", "Notblet\Notblet.csproj", "{BB159BD0-6F18-4A87-B950-8426756FE003}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiNotblet", "ApiNotblet\ApiNotblet.csproj", "{0718B016-748A-44D4-9DD2-7E718A86A2EE}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{A00F957D-26BC-43BC-B415-1B08F0F6845F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A55CF95E-9EEB-478B-A4D1-7874B5BC6E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A55CF95E-9EEB-478B-A4D1-7874B5BC6E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A55CF95E-9EEB-478B-A4D1-7874B5BC6E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A55CF95E-9EEB-478B-A4D1-7874B5BC6E84}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB159BD0-6F18-4A87-B950-8426756FE003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB159BD0-6F18-4A87-B950-8426756FE003}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB159BD0-6F18-4A87-B950-8426756FE003}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB159BD0-6F18-4A87-B950-8426756FE003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0718B016-748A-44D4-9DD2-7E718A86A2EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0718B016-748A-44D4-9DD2-7E718A86A2EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0718B016-748A-44D4-9DD2-7E718A86A2EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0718B016-748A-44D4-9DD2-7E718A86A2EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A00F957D-26BC-43BC-B415-1B08F0F6845F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A00F957D-26BC-43BC-B415-1B08F0F6845F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A00F957D-26BC-43BC-B415-1B08F0F6845F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A00F957D-26BC-43BC-B415-1B08F0F6845F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

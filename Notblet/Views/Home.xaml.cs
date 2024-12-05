@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using LiveCharts.Wpf;
 using System.Windows.Media;
+using NLog;
 
 namespace Notblet.Views
 {
@@ -14,6 +15,7 @@ namespace Notblet.Views
     /// </summary>
     public partial class Home : Page
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); // Initialize NLog logger
 
         List<OrderModel> orders;
         List<ProductModel> products;
@@ -28,31 +30,39 @@ namespace Notblet.Views
         {
             try
             {
+                Logger.Info("Chargement des commandes commencé."); // Log message
                 string token = SecureTokenStorage.Instance.token;
                 string response = await ApiService.Instance.GetDataAsync(ApiConstants.Orders, token: token);
                 orders = JsonConvert.DeserializeObject<List<OrderModel>>(response) ?? new List<OrderModel>();
                 products = orders.Any() ? orders.Select(order => order.product).ToList() : new List<ProductModel>();
+
                 decimal totalSales = 0;
                 for (int i = 0; i < orders.Count; i++)
                 {
                     totalSales += orders[i].product.price * orders[i].quantity;
                 }
                 TotalSales.Text = totalSales.ToString("C");
+
                 if (products.Any())
                 {
                     int BestSellerProductId = products.GroupBy(product => product.id).OrderByDescending(group => group.Count()).First().Key;
                     BestSellerProduct.Text = products.Find(product => product.id == BestSellerProductId).name;
                     CreateChart();
                 }
+
+                Logger.Info("Chargement des commandes terminé avec succès."); // Log success
             }
             catch (Exception ex)
             {
+                Logger.Error(ex, "Erreur lors du chargement des commandes."); // Log error
                 MessageBox.Show($"Erreur lors du chargement des commandes : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void CreateChart()
         {
+            Logger.Info("Création du graphique des produits.");
+
             ProductsChart.Series.Clear();
             ProductsChart.AxisX.Clear();
             ProductsChart.AxisY.Clear();
@@ -60,6 +70,7 @@ namespace Notblet.Views
             // Vérifier que 'orders' contient des données
             if (orders == null || !orders.Any())
             {
+                Logger.Warn("Aucune commande disponible pour le graphique."); // Log warning
                 MessageBox.Show("Aucune commande à afficher dans le graphique.", "Données manquantes", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -99,7 +110,8 @@ namespace Notblet.Views
                 LabelFormatter = value => value.ToString("N0"), // Formater les valeurs de l'axe Y avec des séparateurs de milliers
                 FontSize = 12 // Taille de la police des labels
             });
-        }
 
+            Logger.Info("Graphique des produits créé avec succès.");
+        }
     }
 }

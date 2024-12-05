@@ -1,6 +1,7 @@
+using ApiNotblet;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApiNotblet.Controllers
+namespace NotbletApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

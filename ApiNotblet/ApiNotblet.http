@@ -1,4 +1,4 @@
-@ApiNotblet_HostAddress = http://localhost:5142
+@ApiNotblet_HostAddress = http://localhost:5174
 
 GET {{ApiNotblet_HostAddress}}/weatherforecast/
 Accept: application/json
